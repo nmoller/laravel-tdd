@@ -22,20 +22,12 @@ class ViewConcertListingTest extends TestCase
     {
         // Setup
             // Create a concert
-        $concert = Concert::create(
-          [
-              'title' => 'The Red Chord',
-              'subtitle' => 'with Animosity and Lethargy',
-              'date' => Carbon::parse('December 13, 2017 8:00pm' , 'America/Toronto'),
-              'ticket_price' => 3250,
-              'venue' => 'The Mosh Pit',
-              'venue_address' => '123 Example Lane',
-              'city' => 'Laraville',
-              'state' => 'ON',
-              'zip' => '17916',
-              'additional_information' => 'For tickets, call (555) 555-5555.'
-          ]
-        );
+        $concert = factory(Concert::class)->create([
+            'title' => 'The Red Chord',
+            'subtitle' => 'with Animosity and Lethargy',
+            'date' => Carbon::parse('December 13, 2017 8:00pm', 'America/Toronto'),
+            'additional_information' => 'For tickets, call (555) 555-5555.'
+        ]);
 
         // Act
             // View the concert listing
