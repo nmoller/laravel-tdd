@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ConcertTest extends TestCase
 {
-    //use DatabaseMigrations;
+    use DatabaseMigrations;
 
     /**
      * @test
@@ -46,5 +46,19 @@ class ConcertTest extends TestCase
         ]);
 
         $this->assertEquals( '34.50' , $concert->ticket_price_in_dollars);
+    }
+
+    /**
+     * @test
+     */
+    public function concerts_with_apublished_at_date_are_published(){
+        $publishedConcertA = factory(Concert::class)->create(['published_at' => Carbon::parse('-1 week')]);
+        $publishedConcertB = factory(Concert::class)->create(['published_at' => Carbon::parse('-1 week')]);
+        $unpublishedConcert = factory(Concert::class)->create(['published_at' => null]);
+
+        $publishedConcerts = Concert::published()->get();
+        $this->assertTrue($publishedConcerts->contains($publishedConcertA));
+        $this->assertTrue($publishedConcerts->contains($publishedConcertB));
+        $this->assertFalse($publishedConcerts->contains($unpublishedConcert));
     }
 }
