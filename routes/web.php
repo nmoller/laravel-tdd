@@ -12,3 +12,5 @@
 */
 Route::get('/', 'BasicController@Index');
 Route::get('/concerts/{id}', 'ConcertsController@Show');
+
+Route::post("/concerts/{id}/orders", "ConcertOrdersController@store");
