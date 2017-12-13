@@ -33,6 +33,13 @@ class PurchaseTicketTest extends TestCase
          return $this->json('POST', "/concerts/{$concert->id}/orders", $params);
     }
 
+    private function assertValidationError($response, $field)
+    {
+        $response->assertStatus(422);
+        $jsonRet = $response->decodeResponseJson();
+        $this->assertArrayHasKey($field, $jsonRet['errors']);
+    }
+
     /**
      * @test
      */
@@ -72,9 +79,8 @@ class PurchaseTicketTest extends TestCase
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
-        $response->assertStatus(422);
-        $jsonRet = $response->decodeResponseJson();
-        $this->assertArrayHasKey('email', $jsonRet['errors']);
+        $this->assertValidationError($response, 'email');
+
         // To learn about the structure of the response
         //dd($response->decodeResponseJson());
     }
@@ -94,9 +100,7 @@ class PurchaseTicketTest extends TestCase
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
-        $response->assertStatus(422);
-        $jsonRet = $response->decodeResponseJson();
-        $this->assertArrayHasKey('email', $jsonRet['errors']);
+        $this->assertValidationError($response, 'email');
         // To learn about the structure of the response
         //dd($response->decodeResponseJson());
     }
@@ -115,9 +119,7 @@ class PurchaseTicketTest extends TestCase
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
-        $response->assertStatus(422);
-        $jsonRet = $response->decodeResponseJson();
-        $this->assertArrayHasKey('ticket_quantity', $jsonRet['errors']);
+        $this->assertValidationError($response, 'ticket_quantity');
         // To learn about the structure of the response
         //dd($response->decodeResponseJson());
     }
@@ -137,9 +139,7 @@ class PurchaseTicketTest extends TestCase
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
-        $response->assertStatus(422);
-        $jsonRet = $response->decodeResponseJson();
-        $this->assertArrayHasKey('ticket_quantity', $jsonRet['errors']);
+        $this->assertValidationError($response, 'ticket_quantity');
         // To learn about the structure of the response
         //dd($response->decodeResponseJson());
     }
