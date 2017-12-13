@@ -28,6 +28,11 @@ class PurchaseTicketTest extends TestCase
         $this->app->instance(PaymentGateway::class, $this->paymentGateway);
     }
 
+    private function orderTickets($concert, $params)
+    {
+         return $this->json('POST', "/concerts/{$concert->id}/orders", $params);
+    }
+
     /**
      * @test
      */
@@ -38,7 +43,7 @@ class PurchaseTicketTest extends TestCase
         ]);
 
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
@@ -62,7 +67,7 @@ class PurchaseTicketTest extends TestCase
 
         $concert = factory(Concert::class)->create();
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'ticket_quantity' => 3,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
@@ -83,7 +88,7 @@ class PurchaseTicketTest extends TestCase
 
         $concert = factory(Concert::class)->create();
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'email' => 'an-invalid-email',
             'ticket_quantity' => 3,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
@@ -105,7 +110,7 @@ class PurchaseTicketTest extends TestCase
 
         $concert = factory(Concert::class)->create();
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
@@ -126,7 +131,7 @@ class PurchaseTicketTest extends TestCase
 
         $concert = factory(Concert::class)->create();
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 0,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
@@ -148,7 +153,7 @@ class PurchaseTicketTest extends TestCase
 
         $concert = factory(Concert::class)->create();
 
-        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
         ]);
