@@ -73,4 +73,90 @@ class PurchaseTicketTest extends TestCase
         // To learn about the structure of the response
         //dd($response->decodeResponseJson());
     }
+
+    /**
+     * @test
+     */
+    function email_must_be_valid_to_purchase_tickets()
+    {
+        //$this->withoutExceptionHandling();
+
+        $concert = factory(Concert::class)->create();
+
+        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+            'email' => 'an-invalid-email',
+            'ticket_quantity' => 3,
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+        ]);
+
+        $response->assertStatus(422);
+        $jsonRet = $response->decodeResponseJson();
+        $this->assertArrayHasKey('email', $jsonRet['errors']);
+        // To learn about the structure of the response
+        //dd($response->decodeResponseJson());
+    }
+
+    /**
+     * @test
+     */
+    function ticket_quantity_is_required_to_purchase_tickets()
+    {
+        //$this->withoutExceptionHandling();
+
+        $concert = factory(Concert::class)->create();
+
+        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+            'email' => 'john@example.com',
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+        ]);
+
+        $response->assertStatus(422);
+        $jsonRet = $response->decodeResponseJson();
+        $this->assertArrayHasKey('ticket_quantity', $jsonRet['errors']);
+        // To learn about the structure of the response
+        //dd($response->decodeResponseJson());
+    }
+
+    /**
+     * @test
+     */
+    function ticket_quantity_must_be_at_least_1_to_purchase_tickets()
+    {
+        //$this->withoutExceptionHandling();
+
+        $concert = factory(Concert::class)->create();
+
+        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+            'email' => 'john@example.com',
+            'ticket_quantity' => 0,
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+        ]);
+
+        $response->assertStatus(422);
+        $jsonRet = $response->decodeResponseJson();
+        $this->assertArrayHasKey('ticket_quantity', $jsonRet['errors']);
+        // To learn about the structure of the response
+        //dd($response->decodeResponseJson());
+    }
+
+    /**
+     * @test
+     */
+    function payment_token_is_required()
+    {
+        //$this->withoutExceptionHandling();
+
+        $concert = factory(Concert::class)->create();
+
+        $response = $this->json('POST', "/concerts/{$concert->id}/orders", [
+            'email' => 'john@example.com',
+            'ticket_quantity' => 3,
+        ]);
+
+        $response->assertStatus(422);
+        $jsonRet = $response->decodeResponseJson();
+        $this->assertArrayHasKey('payment_token', $jsonRet['errors']);
+        // To learn about the structure of the response
+        //dd($response->decodeResponseJson());
+    }
 }
